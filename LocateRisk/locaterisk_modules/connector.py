@@ -1,3 +1,5 @@
+import csv
+import io
 import json
 import time
 from pydantic import Field
@@ -29,15 +31,22 @@ class LocateriskConnector(Connector):
                     headers={"Authorization": f"Bearer {self.module.configuration.api_key}"},
                 )
                 response.raise_for_status()
-                data = response.json()
+
+                # Parse the CSV body into a list of dicts (header row → keys)
+                csv_text = response.text
+                reader = csv.DictReader(io.StringIO(csv_text), delimiter=";")
+                rows = list(reader)
+
             except requests.RequestException as error:
                 self.log_exception(error, message="Error fetching data from Locaterisk API")
+            except csv.Error as error:
+                self.log_exception(error, message="Error parsing CSV from Locaterisk API")
 
             # Process collected data (if needed)
             batch_of_events = []
-            for item in data:
+            for row in rows:
                 item["source"] = "Locaterisk"
-                batch_of_events.append(json.dumps(item))
+                batch_of_events.append(json.dumps(row))
 
             # Push events to Sekoia platform
             if batch_of_events:
