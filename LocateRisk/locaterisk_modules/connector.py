@@ -45,7 +45,7 @@ class LocateriskConnector(Connector):
             # Process collected data (if needed)
             batch_of_events = []
             for row in rows:
-                item["source"] = "Locaterisk"
+                row["source"] = "Locaterisk"
                 batch_of_events.append(json.dumps(row))
 
             # Push events to Sekoia platform
