@@ -5,15 +5,27 @@
         "description": "API Key",
         "title": "Api Key",
         "type": "string"
+      },
+      "scan_id": {
+        "description": "Scan ID",
+        "title": "Scan Id",
+        "type": "string"
+      },
+      "report_url": {
+        "default": "https://app.locaterisk.com/api/rest/report/export",
+        "title": "Report Url",
+        "type": "string"
       }
     },
     "required": [
-      "api_key"
+      "api_key",
+      "scan_id"
     ],
     "title": "LocateriskModuleConfiguration",
     "type": "object",
     "secrets": [
-      "api_key"
+      "api_key",
+      "scan_id"
     ]
   },
   "description": "Specialist for automated IT risk analysis and monitoring",

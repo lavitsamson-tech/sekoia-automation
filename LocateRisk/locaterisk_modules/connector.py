@@ -25,7 +25,7 @@ class LocateriskConnector(Connector):
             data = []
             try:
                 response = requests.get(
-                    "https://jsonplaceholder.typicode.com/posts",
+                    f"{self.module.configuration.report_url}/{self.module.configuration.scan_id}/csv",
                     headers={"Authorization": f"Bearer {self.module.configuration.api_key}"},
                 )
                 response.raise_for_status()
