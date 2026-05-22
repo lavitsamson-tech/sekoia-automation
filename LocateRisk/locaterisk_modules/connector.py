@@ -34,20 +34,23 @@ class LocateriskConnector(Connector):
 
                 # Parse the CSV body into a list of dicts (header row → keys)
                 response.encoding = "utf-8-sig"
-                csv_text = response.text
-                reader = csv.DictReader(io.StringIO(csv_text), delimiter=";")
-                rows = list(reader)
+                raw_lines = response.text.splitlines()
 
             except requests.RequestException as error:
                 self.log_exception(error, message="Error fetching data from Locaterisk API")
             except csv.Error as error:
                 self.log_exception(error, message="Error parsing CSV from Locaterisk API")
 
-            # Process collected data (if needed)
+            if not raw_lines:
+                continue
+
+            header = raw_lines[0]  # discard or log
+            data_lines = raw_lines[1:]
+
             batch_of_events = []
-            for row in rows:
-                row["source"] = "Locaterisk"
-                batch_of_events.append(json.dumps(row))
+            for line in data_lines:
+                if line.strip():  # skip blank lines
+                    batch_of_events.append(line)
 
             # Push events to Sekoia platform
             if batch_of_events:
