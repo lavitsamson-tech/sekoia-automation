@@ -33,6 +33,7 @@ class LocateriskConnector(Connector):
                 response.raise_for_status()
 
                 # Parse the CSV body into a list of dicts (header row → keys)
+                response.encoding = "utf-8"
                 csv_text = response.text
                 reader = csv.DictReader(io.StringIO(csv_text), delimiter=";")
                 rows = list(reader)
