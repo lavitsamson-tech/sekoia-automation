@@ -27,10 +27,11 @@ class LocateriskConnector(Connector):
             batch_of_events = []
             try:
                 response = requests.get(
-                    "https://your-api.example.com/export",
+                    f"{self.module.configuration.report_url}/{self.module.configuration.scan_id}/csv",
                     headers={"Authorization": f"Bearer {self.module.configuration.api_key}"},
                     timeout=60,
                 )
+
                 response.raise_for_status()
                 response.encoding = "utf-8-sig"  # handle UTF-8 BOM if present
 
